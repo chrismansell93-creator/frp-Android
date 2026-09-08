@@ -151,7 +151,10 @@ class FrpConfigProvider : ContentProvider() {
                 val frpType = AutoStartHelper.parseType(type) ?: return 0
                 val file = File(frpType.getDir(context), name)
                 val deleted = if (file.exists()) file.delete() else false
-                if (deleted) {
+                val hadAutoStartEntry = prefs.getStringSet(frpType.getAutoStartPreferencesKey(), emptySet())
+                    ?.contains(name) == true
+                if (deleted || hadAutoStartEntry) {
+                    AutoStartHelper.removeAutoStartConfig(context, frpType, name)
                     context.contentResolver.notifyChange(uri, null)
                     1
                 } else {

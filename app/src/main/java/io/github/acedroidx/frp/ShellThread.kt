@@ -49,6 +49,10 @@ class ShellThread(
     }
 
     fun stopProcess() {
+        if (!::process.isInitialized) {
+            return
+        }
+
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 process.destroyForcibly()
