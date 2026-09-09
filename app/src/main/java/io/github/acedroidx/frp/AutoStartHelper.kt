@@ -27,6 +27,14 @@ object AutoStartHelper {
         return result
     }
 
+    fun removeAutoStartConfig(context: Context, type: FrpType, configName: String) {
+        val preferences = context.getSharedPreferences("data", Context.MODE_PRIVATE)
+        val key = type.getAutoStartPreferencesKey()
+        val names = preferences.getStringSet(key, emptySet())?.toMutableSet() ?: return
+        if (!names.remove(configName)) return
+        preferences.edit().putStringSet(key, names).apply()
+    }
+
     fun parseType(typeValue: String?): FrpType? {
         return when (typeValue?.lowercase()) {
             FrpType.FRPC.typeName -> FrpType.FRPC
